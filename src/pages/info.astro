@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sanityClient } from 'sanity:client';
+import PortableText from '../components/PortableText.astro';
+
+const siteInfo = await sanityClient
+  .fetch(`*[_type == "siteInfo"][0]{
+    infoContent,
+    gameSchedule,
+    rules
+  }`)
+  .catch(() => null);
+
+const infoContent = siteInfo?.infoContent ?? [];
+const gameSchedule = siteInfo?.gameSchedule ?? '';
+const rules = siteInfo?.rules ?? [];
+---
+
+<BaseLayout
+  title="Info | Airsoft Club"
+  description="Spielplan, Regeln und Vereinsinformationen"
+  currentPage="/info"
+>
+  <section class="page-hero">
+    <div class="container">
+      <h1>Info</h1>
+      <p class="page-subtitle">Spielplan, Regeln und Richtlinien</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      {infoContent && infoContent.length > 0 ? (
+        <div class="content-block">
+          <h2>Vereinsinformationen</h2>
+          <PortableText value={infoContent} />
+        </div>
+      ) : (
+        <div class="content-block">
+          <h2>Vereinsinformationen</h2>
+          <p>
+            Willkommen bei unserem Airsoft-Verein. Wir organisieren regelmäßige Spiele und Events.
+            Schau vorbei für Aktualisierungen zu unserem Spielplan und unseren Regeln.
+          </p>
+        </div>
+      )}
+
+      {gameSchedule ? (
+        <div class="content-block">
+          <h2>Spielplan</h2>
+          <pre class="schedule-text">{gameSchedule}</pre>
+        </div>
+      ) : (
+        <div class="content-block">
+          <h2>Spielplan</h2>
+          <p>Der Spielplan wird bald aktualisiert. Kontaktiere uns für kommende Events.</p>
+        </div>
+      )}
+
+      {rules && rules.length > 0 ? (
+        <div class="content-block">
+          <h2>Regeln & Richtlinien</h2>
+          <PortableText value={rules} />
+        </div>
+      ) : (
+        <div class="content-block">
+          <h2>Regeln & Richtlinien</h2>
+          <ul>
+            <li>Augenschutz ist jederzeit Pflicht</li>
+            <li>Respektiere Chrono-Limits und Spielfeldregeln</li>
+            <li>Melde deine Treffer und spiele fair</li>
+            <li>Kein Körperkontakt oder unsicheres Verhalten</li>
+          </ul>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .page-hero h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2.5rem;
+  }
+
+  .page-subtitle {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .content-section {
+    padding: 3rem 0;
+  }
+
+  .content-block {
+    margin-bottom: 3rem;
+  }
+
+  .content-block:last-child {
+    margin-bottom: 0;
+  }
+
+  .content-block h2 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .schedule-text {
+    white-space: pre-wrap;
+    font-family: var(--font-sans);
+    background: var(--color-surface);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    overflow-x: auto;
+  }
+</style>

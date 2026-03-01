@@ -1,0 +1,50 @@
+---
+import { PortableText as PortableTextInternal } from 'astro-portabletext';
+import PortableTextImage from './PortableTextImage.astro';
+
+interface Props {
+  value: unknown[];
+}
+
+const { value } = Astro.props;
+
+const components = {
+  type: {
+    image: PortableTextImage,
+  },
+};
+---
+
+{value && value.length > 0 ? (
+  <div class="portable-text">
+    <PortableTextInternal value={value} components={components} />
+  </div>
+) : null}
+
+<style>
+  .portable-text :global(p) {
+    margin: 0 0 1rem;
+  }
+
+  .portable-text :global(ul),
+  .portable-text :global(ol) {
+    margin: 0 0 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .portable-text :global(h2) {
+    margin: 2rem 0 1rem;
+    font-size: 1.5rem;
+  }
+
+  .portable-text :global(h3) {
+    margin: 1.5rem 0 0.75rem;
+    font-size: 1.25rem;
+  }
+
+  .portable-text :global(img) {
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    margin: 1rem 0;
+  }
+</style>

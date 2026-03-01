@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sanityClient } from 'sanity:client';
+
+const albums = await sanityClient
+  .fetch(`*[_type == "photoAlbum"] | order(eventDate desc){
+    _id,
+    title,
+    slug,
+    eventDate,
+    description,
+    "imageCount": count(images)
+  }`)
+  .catch(() => []);
+---
+
+<BaseLayout
+  title="Photoalbum | Airsoft Club"
+  description="Fotos von unseren Spielen und Events"
+  currentPage="/photos"
+>
+  <section class="page-hero">
+    <div class="container">
+      <h1>Photoalbum</h1>
+      <p class="page-subtitle">Erinnerungen von unseren Spielen und Events</p>
+    </div>
+  </section>
+
+  <section class="albums-section">
+    <div class="container">
+      {albums.length > 0 ? (
+        <div class="albums-grid">
+          {albums.map((album) => (
+            <a
+              href={`/photos/${album.slug?.current ?? album._id}`}
+              class="album-card"
+            >
+              <div class="album-card-placeholder"></div>
+              <div class="album-card-content">
+                <h3 class="album-title">{album.title}</h3>
+                {album.eventDate ? (
+                  <time class="album-date" datetime={album.eventDate}>
+                    {new Date(album.eventDate).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </time>
+                ) : null}
+                {album.imageCount > 0 ? (
+                  <span class="album-count">{album.imageCount} Fotos</span>
+                ) : null}
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>Noch keine Fotoalben. Lade Fotos über die CMS-Verwaltung hoch.</p>
+          <a href="/admin" class="btn btn-primary">CMS öffnen</a>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .page-hero h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2.5rem;
+  }
+
+  .page-subtitle {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .albums-section {
+    padding: 3rem 0;
+  }
+
+  .albums-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .album-card {
+    display: block;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all var(--transition);
+  }
+
+  .album-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  .album-card-placeholder {
+    aspect-ratio: 16/10;
+    background: var(--color-surface-hover);
+  }
+
+  .album-card-content {
+    padding: 1.25rem;
+  }
+
+  .album-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+  }
+
+  .album-date,
+  .album-count {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 0;
+  }
+
+  .empty-state p {
+    margin: 0 0 1rem;
+    color: var(--color-text-muted);
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-accent);
+    color: white;
+    border-radius: var(--radius);
+    transition: background var(--transition);
+  }
+
+  .btn:hover {
+    background: var(--color-accent-hover);
+    color: white;
+  }
+</style>

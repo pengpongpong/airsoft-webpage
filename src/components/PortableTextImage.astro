@@ -1,0 +1,24 @@
+---
+import SanityImage from './SanityImage.astro';
+
+interface Props {
+  value: { asset?: unknown; alt?: string };
+}
+
+const { value } = Astro.props;
+---
+
+<figure class="portable-text-image">
+  <SanityImage node={value} width={960} class="portable-text-img" />
+</figure>
+
+<style>
+  .portable-text-image {
+    margin: 1.5rem 0;
+  }
+
+  .portable-text-img {
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+  }
+</style>

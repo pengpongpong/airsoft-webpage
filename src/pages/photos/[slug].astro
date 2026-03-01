@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sanityClient } from 'sanity:client';
+import SanityImage from '../../components/SanityImage.astro';
+
+export async function getStaticPaths() {
+  const albums = await sanityClient
+    .fetch(`*[_type == "photoAlbum" && defined(slug.current)]{ "slug": slug.current }`)
+    .catch(() => []);
+  return albums.map((a: { slug: string }) => ({ params: { slug: a.slug } }));
+}
+
+const { slug } = Astro.params;
+const album = await sanityClient
+  .fetch(
+    `*[_type == "photoAlbum" && slug.current == $slug][0]{
+      title,
+      eventDate,
+      description,
+      images[]{
+        asset,
+        caption,
+        alt
+      }
+    }`,
+    { slug }
+  )
+  .catch(() => null);
+
+if (!album) {
+  return Astro.redirect('/photos');
+}
+
+const images = album.images ?? [];
+---
+
+<BaseLayout
+  title={`${album.title} | Photoalbum`}
+  description={album.description ?? `Fotos von ${album.title}`}
+  currentPage="/photos"
+>
+  <section class="page-hero">
+    <div class="container">
+      <a href="/photos" class="back-link">← Zurück zu den Alben</a>
+      <h1>{album.title}</h1>
+      {album.eventDate ? (
+        <time class="album-date" datetime={album.eventDate}>
+          {new Date(album.eventDate).toLocaleDateString('de-DE', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+      ) : null}
+      {album.description ? (
+        <p class="album-description">{album.description}</p>
+      ) : null}
+    </div>
+  </section>
+
+  <section class="photos-section">
+    <div class="container">
+      {images.length > 0 ? (
+        <div class="photos-grid">
+          {images.map((img: { asset?: unknown; caption?: string; alt?: string }) => (
+            <figure class="photo-item">
+              <SanityImage
+                asset={img.asset}
+                alt={img.alt ?? img.caption ?? ''}
+                class="photo-image"
+              />
+              {img.caption ? (
+                <figcaption class="photo-caption">{img.caption}</figcaption>
+              ) : null}
+            </figure>
+          ))}
+        </div>
+      ) : (
+        <p class="empty-state">Noch keine Fotos in diesem Album.</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .page-hero h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2.5rem;
+  }
+
+  .album-date {
+    display: block;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .album-description {
+    margin: 0;
+    color: var(--color-text-muted);
+    max-width: 600px;
+  }
+
+  .photos-section {
+    padding: 3rem 0;
+  }
+
+  .photos-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .photo-item {
+    margin: 0;
+  }
+
+  .photo-image {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+  }
+
+  .photo-caption {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--color-text-muted);
+  }
+</style>

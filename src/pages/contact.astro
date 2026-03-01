@@ -1,0 +1,183 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sanityClient } from 'sanity:client';
+import PortableText from '../components/PortableText.astro';
+
+const contact = await sanityClient
+  .fetch(`*[_type == "contactInfo"][0]{
+    email,
+    phone,
+    address,
+    socialLinks,
+    contactMessage
+  }`)
+  .catch(() => null);
+
+const contactMessage = contact?.contactMessage ?? [];
+const socialLinks = contact?.socialLinks ?? [];
+---
+
+<BaseLayout
+  title="Kontakt | Airsoft Club"
+  description="Nimm Kontakt mit unserem Airsoft-Verein auf"
+  currentPage="/contact"
+>
+  <section class="page-hero">
+    <div class="container">
+      <h1>Kontakt</h1>
+      <p class="page-subtitle">Nimm Kontakt auf oder werde Teil unserer Gemeinschaft</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container contact-grid">
+      {contactMessage.length > 0 ? (
+        <div class="contact-message">
+          <PortableText value={contactMessage} />
+        </div>
+      ) : (
+        <div class="contact-message">
+          <p>
+            Hast du Fragen zu unserem Verein, kommenden Spielen oder wie du beitreten kannst?
+            Melde dich – wir freuen uns von dir zu hören.
+          </p>
+        </div>
+      )}
+
+      <div class="contact-details">
+        <h2>Kontaktdaten</h2>
+        <dl class="contact-list">
+          {contact?.email ? (
+            <div class="contact-item">
+              <dt>E-Mail</dt>
+              <dd>
+                <a href={`mailto:${contact.email}`}>{contact.email}</a>
+              </dd>
+            </div>
+          ) : null}
+          {contact?.phone ? (
+            <div class="contact-item">
+              <dt>Telefon</dt>
+              <dd>
+                <a href={`tel:${contact.phone}`}>{contact.phone}</a>
+              </dd>
+            </div>
+          ) : null}
+          {contact?.address ? (
+            <div class="contact-item">
+              <dt>Adresse</dt>
+              <dd>{contact.address}</dd>
+            </div>
+          ) : null}
+        </dl>
+
+        {socialLinks.length > 0 ? (
+          <div class="social-links">
+            <h3>Folge uns</h3>
+            <ul>
+              {socialLinks.map(
+                (link: { platform?: string; url?: string }) =>
+                  link?.url ? (
+                    <li>
+                      <a href={link.url} target="_blank" rel="noopener noreferrer">
+                        {link.platform ?? 'Link'}
+                      </a>
+                    </li>
+                  ) : null
+              )}
+            </ul>
+          </div>
+        ) : null}
+
+        {!contact?.email && !contact?.phone && !contact?.address && socialLinks.length === 0 ? (
+          <p class="placeholder-text">
+            Kontaktdaten über die <a href="/admin">CMS-Verwaltung</a> hinzufügen
+          </p>
+        ) : null}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .page-hero h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2.5rem;
+  }
+
+  .page-subtitle {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .content-section {
+    padding: 3rem 0;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .contact-message p {
+    max-width: 50ch;
+  }
+
+  .contact-details h2 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+  }
+
+  .contact-list {
+    margin: 0 0 1.5rem;
+  }
+
+  .contact-item {
+    margin-bottom: 1rem;
+  }
+
+  .contact-item dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .contact-item dd {
+    margin: 0;
+  }
+
+  .social-links h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+  }
+
+  .social-links ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .social-links li {
+    margin-bottom: 0.5rem;
+  }
+
+  .placeholder-text {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+</style>

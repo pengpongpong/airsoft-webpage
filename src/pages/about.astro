@@ -1,0 +1,157 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sanityClient } from 'sanity:client';
+import PortableText from '../components/PortableText.astro';
+import SanityImage from '../components/SanityImage.astro';
+
+const about = await sanityClient
+  .fetch(`*[_type == "aboutPage"][0]{
+    title,
+    heroImage,
+    content,
+    mission,
+    founded,
+    membersCount
+  }`)
+  .catch(() => null);
+
+const content = about?.content ?? [];
+const heroImage = about?.heroImage;
+---
+
+<BaseLayout
+  title="Über uns | Airsoft Club"
+  description="Erfahre mehr über unseren Airsoft-Verein und unsere Gemeinschaft"
+  currentPage="/about"
+>
+  <section class="page-hero">
+    {heroImage?.asset ? (
+      <div class="hero-image-wrap">
+        <SanityImage
+          asset={heroImage}
+          alt="Über uns"
+          class="hero-image"
+          width={800}
+        />
+      </div>
+    ) : (
+      <div class="hero-placeholder"></div>
+    )}
+    <div class="container hero-content">
+      <h1>{about?.title ?? 'Über uns'}</h1>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      {content.length > 0 ? (
+        <div class="content-block">
+          <PortableText value={content} />
+        </div>
+      ) : (
+        <div class="content-block">
+          <p>
+            Wir sind eine Gemeinschaft von Airsoft-Enthusiasten, die sich für sicheres,
+            faires und spaßiges taktisches Spielen einsetzt. Ob du neu im Sport bist oder
+            erfahrener Spieler – du bist hier willkommen.
+          </p>
+        </div>
+      )}
+
+      <div class="about-meta">
+        {about?.mission ? (
+          <div class="meta-item">
+            <h3>Unsere Mission</h3>
+            <p>{about.mission}</p>
+          </div>
+        ) : null}
+        {about?.founded ? (
+          <div class="meta-item">
+            <h3>Gegründet</h3>
+            <p>{about.founded}</p>
+          </div>
+        ) : null}
+        {about?.membersCount ? (
+          <div class="meta-item">
+            <h3>Mitglieder</h3>
+            <p>{about.membersCount}</p>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-image-wrap {
+    width: 100%;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .hero-image {
+    max-width: 400px;
+    max-height: 120px;
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .hero-placeholder {
+    width: 100%;
+    aspect-ratio: 21 / 9;
+    background: var(--color-surface);
+    flex-shrink: 0;
+  }
+
+  .hero-content {
+    padding: 2rem 0;
+  }
+
+  .hero-content h1 {
+    margin: 0;
+    font-size: 2.5rem;
+  }
+
+  .content-section {
+    padding: 3rem 0;
+  }
+
+  .content-block {
+    margin-bottom: 2rem;
+  }
+
+  .content-block p {
+    max-width: 65ch;
+  }
+
+  .about-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .meta-item h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .meta-item p {
+    margin: 0;
+  }
+</style>

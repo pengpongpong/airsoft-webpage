@@ -1,0 +1,54 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-content">
+      <p class="footer-text">© {currentYear} Airsoft Club. Alle Rechte vorbehalten.</p>
+      <nav class="footer-nav" aria-label="Fußzeilen-Navigation">
+        <a href="/info">Info</a>
+        <a href="/photos">Fotos</a>
+        <a href="/about">Über uns</a>
+        <a href="/contact">Kontakt</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: auto;
+    padding: 2rem 0;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-bg-elevated);
+  }
+
+  .footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer-text {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  .footer-nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-nav a {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  .footer-nav a:hover {
+    color: var(--color-accent);
+  }
+</style>

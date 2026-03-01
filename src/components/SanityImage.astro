@@ -1,0 +1,39 @@
+---
+import imageUrlBuilder from '@sanity/image-url';
+import { sanityClient } from 'sanity:client';
+
+interface Props {
+  asset?: { _ref?: string; asset?: { url?: string } };
+  node?: { asset?: unknown; alt?: string };
+  alt?: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  sizes?: string;
+}
+
+const props = Astro.props;
+const node = props.node ?? (props.asset ? { asset: props.asset, alt: props.alt } : null);
+
+let url = '';
+if (node?.asset) {
+  const builder = imageUrlBuilder(sanityClient);
+  let imageBuilder = builder.image(node.asset);
+  if (props.width) imageBuilder = imageBuilder.width(props.width);
+  if (props.height) imageBuilder = imageBuilder.height(props.height);
+  url = imageBuilder.url();
+}
+const altText = node?.alt ?? props.alt ?? '';
+---
+
+{url ? (
+  <img
+    src={url}
+    alt={altText}
+    width={props.width}
+    height={props.height}
+    class={props.class}
+    sizes={props.sizes}
+    loading="lazy"
+  />
+) : null}
