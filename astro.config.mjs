@@ -3,7 +3,7 @@ import { loadEnv } from 'vite';
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { defineConfig } from 'astro/config';
-import node from '@astrojs/node';
+import cloudflare from '@astrojs/cloudflare';
 import sanity from '@sanity/astro';
 import react from '@astrojs/react';
 import basicSsl from '@vitejs/plugin-basic-ssl';
@@ -52,8 +52,9 @@ if (projectId === 'your-project-id') {
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  adapter: node({ mode: 'standalone' }),
+  adapter: cloudflare(),
   vite: {
+    // @ts-expect-error - Vite plugin type mismatch between project and Astro's bundled Vite
     plugins: [basicSsl()],
     define: {
       'import.meta.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(projectId),
