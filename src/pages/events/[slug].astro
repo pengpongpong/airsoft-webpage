@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sanityClient } from 'sanity:client';
+import SanityImage from '../../components/SanityImage.astro';
+import PortableText from '../../components/PortableText.astro';
+
+export async function getStaticPaths() {
+  const events = await sanityClient
+    .fetch(`*[_type == "event" && defined(slug.current)]{ "slug": slug.current }`)
+    .catch(() => []);
+  return events.map((e: { slug: string }) => ({ params: { slug: e.slug } }));
+}
+
+const { slug } = Astro.params;
+const event = await sanityClient
+  .fetch(
+    `*[_type == "event" && slug.current == $slug][0]{
+      title,
+      eventDate,
+      location,
+      description,
+      image,
+      content
+    }`,
+    { slug }
+  )
+  .catch(() => null);
+
+if (!event) {
+  return Astro.redirect('/events');
+}
+
+const content = event.content ?? [];
+---
+
+<BaseLayout
+  title={`${event.title} | Events`}
+  description={event.description ?? `Event: ${event.title}`}
+  currentPage="/events"
+>
+  <section class="page-hero">
+    <div class="container">
+      <a href="/events" class="back-link">← Zurück zu den Events</a>
+      <h1>{event.title}</h1>
+      {event.eventDate ? (
+        <time class="event-date" datetime={event.eventDate}>
+          {new Date(event.eventDate).toLocaleDateString('de-DE', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </time>
+      ) : null}
+      {event.location ? (
+        <p class="event-location">{event.location}</p>
+      ) : null}
+      {event.description ? (
+        <p class="event-description">{event.description}</p>
+      ) : null}
+    </div>
+  </section>
+
+  <section class="event-content-section">
+    <div class="container">
+      {event.image?.asset ? (
+        <div class="event-image-wrap">
+          <SanityImage
+            asset={event.image}
+            alt={event.title}
+            width={960}
+          />
+        </div>
+      ) : null}
+      {content.length > 0 ? (
+        <div class="content-block">
+          <PortableText value={content} />
+        </div>
+      ) : null}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+  }
+
+  .page-hero h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2.5rem;
+  }
+
+  .event-date,
+  .event-location {
+    display: block;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .event-description {
+    margin: 0;
+    color: var(--color-text-muted);
+    max-width: 600px;
+  }
+
+  .event-content-section {
+    padding: 3rem 0;
+  }
+
+  .event-image-wrap {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .event-image-wrap :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+  }
+
+  .content-block {
+    max-width: 65ch;
+  }
+</style>

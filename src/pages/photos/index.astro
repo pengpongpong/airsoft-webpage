@@ -40,7 +40,7 @@ const albums = await sanityClient
                 <h3 class="album-title">{album.title}</h3>
                 {album.eventDate ? (
                   <time class="album-date" datetime={album.eventDate}>
-                    {new Date(album.eventDate).toLocaleDateString('en-US', {
+                    {new Date(album.eventDate).toLocaleDateString('de-DE', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
@@ -56,8 +56,7 @@ const albums = await sanityClient
         </div>
       ) : (
         <div class="empty-state">
-          <p>Noch keine Fotoalben. Lade Fotos über die CMS-Verwaltung hoch.</p>
-          <a href="/admin" class="btn btn-primary">CMS öffnen</a>
+          <p>Noch keine Fotoalben.</p>
         </div>
       )}
     </div>
@@ -133,19 +132,5 @@ const albums = await sanityClient
   .empty-state p {
     margin: 0 0 1rem;
     color: var(--color-text-muted);
-  }
-
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    background: var(--color-accent);
-    color: white;
-    border-radius: var(--radius);
-    transition: background var(--transition);
-  }
-
-  .btn:hover {
-    background: var(--color-accent-hover);
-    color: white;
   }
 </style>
