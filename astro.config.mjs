@@ -59,6 +59,12 @@ export default defineConfig({
   vite: {
     // @ts-expect-error - Vite plugin type mismatch between project and Astro's bundled Vite
     plugins: [basicSsl()],
+    resolve: {
+      alias:
+        process.env.NODE_ENV === 'production'
+          ? { 'react-dom/server': 'react-dom/server.edge' }
+          : {},
+    },
     define: {
       'import.meta.env.PUBLIC_SANITY_PROJECT_ID': JSON.stringify(projectId),
       'import.meta.env.PUBLIC_SANITY_DATASET': JSON.stringify(dataset),
