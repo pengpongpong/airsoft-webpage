@@ -1,0 +1,251 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sanityClient } from 'sanity:client';
+import PortableText from '../components/PortableText.astro';
+
+const verein = await sanityClient
+  .fetch(`*[_type == "vereinLegal"][0]{
+    vereinsnummer,
+    registergericht,
+    sitz,
+    vorstand,
+    steuernummer,
+    finanzamt,
+    satzungUrl,
+    impressum,
+    datenschutz
+  }`)
+  .catch(() => null);
+
+const vorstand = verein?.vorstand ?? [];
+---
+
+<BaseLayout
+  title="Verein | Airsoft Club"
+  description="Vereinsrechtliche Angaben, Impressum und Datenschutz"
+  currentPage="/verein"
+>
+  <section class="page-hero">
+    <div class="container">
+      <h1>Verein</h1>
+      <p class="page-subtitle">Vereinsrechtliche Angaben, Impressum und Datenschutz</p>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <div class="container">
+      <div class="legal-grid">
+        <div class="legal-block">
+          <h2>Vereinsdaten</h2>
+          <dl class="legal-dl">
+            {verein?.vereinsnummer && (
+              <>
+                <dt>Vereinsnummer</dt>
+                <dd>{verein.vereinsnummer}</dd>
+              </>
+            )}
+            {verein?.registergericht && (
+              <>
+                <dt>Registergericht</dt>
+                <dd>{verein.registergericht}</dd>
+              </>
+            )}
+            {verein?.sitz && (
+              <>
+                <dt>Sitz des Vereins</dt>
+                <dd>{verein.sitz}</dd>
+              </>
+            )}
+            {verein?.steuernummer && (
+              <>
+                <dt>Steuernummer</dt>
+                <dd>{verein.steuernummer}</dd>
+              </>
+            )}
+            {verein?.finanzamt && (
+              <>
+                <dt>Finanzamt</dt>
+                <dd>{verein.finanzamt}</dd>
+              </>
+            )}
+          </dl>
+          {verein?.satzungUrl && (
+            <p class="satzung-link">
+              <a href={verein.satzungUrl} target="_blank" rel="noopener noreferrer">
+                Satzung herunterladen (PDF)
+              </a>
+            </p>
+          )}
+        </div>
+
+        {vorstand.length > 0 && (
+          <div class="legal-block">
+            <h2>Vorstand</h2>
+            <ul class="vorstand-list">
+              {vorstand.map((member: { name?: string; role?: string; email?: string }) => (
+                <li>
+                  <strong>{member.name}</strong>
+                  {member.role && <span class="role"> – {member.role}</span>}
+                  {member.email && (
+                    <a href={`mailto:${member.email}`} class="email">{member.email}</a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {verein?.impressum && verein.impressum.length > 0 && (
+        <div class="content-block">
+          <h2>Impressum</h2>
+          <div class="legal-content">
+            <PortableText value={verein.impressum} />
+          </div>
+        </div>
+      )}
+
+      {verein?.datenschutz && verein.datenschutz.length > 0 && (
+        <div class="content-block">
+          <h2>Datenschutzerklärung</h2>
+          <div class="legal-content">
+            <PortableText value={verein.datenschutz} />
+          </div>
+        </div>
+      )}
+
+      {!verein && (
+        <div class="content-block placeholder">
+          <p>
+            Die vereinsrechtlichen Angaben werden in Kürze ergänzt. Bitte konfiguriere den
+            Inhalt unter <a href="/admin">Sanity Studio</a> → „Vereinsrechtliches“.
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-hero {
+    padding: 3rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .page-hero h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2.5rem;
+  }
+
+  .page-subtitle {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .content-section {
+    padding: 3rem 0;
+  }
+
+  .legal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .legal-block {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+
+  .legal-block h2 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .legal-dl {
+    margin: 0;
+    display: grid;
+    gap: 0.5rem 1.5rem;
+    grid-template-columns: auto 1fr;
+  }
+
+  .legal-dl dt {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .legal-dl dd {
+    margin: 0;
+  }
+
+  .satzung-link {
+    margin: 1rem 0 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .satzung-link a {
+    color: var(--color-accent);
+  }
+
+  .vorstand-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .vorstand-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .vorstand-list li:last-child {
+    border-bottom: none;
+  }
+
+  .vorstand-list .role {
+    color: var(--color-text-muted);
+    font-weight: normal;
+  }
+
+  .vorstand-list .email {
+    font-size: 0.9rem;
+    color: var(--color-accent);
+  }
+
+  .content-block {
+    margin-bottom: 3rem;
+  }
+
+  .content-block:last-child {
+    margin-bottom: 0;
+  }
+
+  .content-block h2 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .legal-content {
+    max-width: 65ch;
+  }
+
+  .placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .placeholder a {
+    color: var(--color-accent);
+  }
+</style>
