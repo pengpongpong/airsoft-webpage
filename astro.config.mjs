@@ -52,7 +52,10 @@ if (projectId === 'your-project-id') {
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'compile',
+    platformProxy: { enabled: true },
+  }),
   vite: {
     // @ts-expect-error - Vite plugin type mismatch between project and Astro's bundled Vite
     plugins: [basicSsl()],
