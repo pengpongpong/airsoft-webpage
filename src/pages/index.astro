@@ -1,196 +1,179 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { sanityClient } from 'sanity:client';
+import {sanityClient} from 'sanity:client';
 import SanityImage from '../components/SanityImage.astro';
 
 const siteInfo = await sanityClient
-  .fetch(`*[_type == "siteInfo"][0]{
+    .fetch(`*[_type == "siteInfo"][0]{
     clubName,
     tagline,
     heroImage
   }`)
-  .catch(() => null);
+    .catch(() => null);
 
-const clubName = siteInfo?.clubName ?? 'Airsoft Club';
-const tagline = siteInfo?.tagline ?? 'Taktische Sportgemeinschaft';
-const heroImage = siteInfo?.heroImage;
+const clubName = siteInfo?.clubName ?? 'Airsoft Panthers Graz';
 ---
 
-<BaseLayout title={clubName} description={tagline} currentPage="/">
-  <section class="hero">
-    {heroImage?.asset ? (
-      <div class="hero-image-wrap">
-        <SanityImage
-          asset={heroImage}
-          alt={clubName}
-          class="hero-image"
-          width={800}
-        />
-      </div>
-    ) : (
-      <div class="hero-placeholder"></div>
-    )}
-    <div class="hero-content">
-      <h1 class="hero-title">{clubName}</h1>
-      <p class="hero-tagline">{tagline}</p>
-      <div class="hero-actions">
-        <a href="/info" class="btn btn-primary">Spiel-Info</a>
-        <a href="/photos" class="btn btn-secondary">Photoalbum</a>
-      </div>
-    </div>
-  </section>
+<BaseLayout title={clubName} currentPage="/">
+    <section class="hero">
+        <img class="hero-img" src="/svg/LandingPage_Photo_freigestellt.svg" alt="logo"/>
+        <div class="hero-content">
+            <h1 class="hero-title">{clubName}</h1>
+            <div class="hero-btn-container">
+                <a href="/contact" class="hero-btn">COOL, I'M WITH YOU!</a>
+                <div class="hero-socials">
+                    Social Media
+                    <div>
+                        <a href="https://www.facebook.com/AirsoftPanthersGraz/" rel="noopener noreferrer" target="_blank">
+                            <i class="fa-brands fa-facebook"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@AirsoftPanthersGraz" rel="noopener noreferrer" target="_blank">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                        <a href="https://www.instagram.com/airsoft_panthers_graz" rel="noopener noreferrer" target="_blank">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://t.me/+RPahXTngC-tch6rs?utm_source=ig&utm_medium=social&utm_content=link_in_bio#" rel="noopener noreferrer" target="_blank">
+                            <i class="fa-brands fa-telegram"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <section class="intro">
-    <div class="container">
-      <h2>Willkommen</h2>
-      <p class="intro-text">
-        Werde Teil unserer Gemeinschaft von Taktiksport-Enthusiasten. Wir veranstalten regelmäßige Spiele,
-        halten sichere Spielstandards ein und heißen sowohl Einsteiger als auch erfahrene Spieler willkommen.
-      </p>
-      <div class="intro-links">
-        <a href="/about" class="link-card">
-          <span class="link-card-title">Über uns</span>
-          <span class="link-card-desc">Erfahre mehr über unseren Verein und unsere Mission</span>
-        </a>
-        <a href="/contact" class="link-card">
-          <span class="link-card-title">Kontakt</span>
-          <span class="link-card-desc">Nimm Kontakt auf oder werde Teil unserer Gemeinschaft</span>
-        </a>
-      </div>
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
-  .hero {
-    display: flex;
-    flex-direction: column;
-  }
+    .hero {
+        position: relative;
+    }
 
-  .hero-image-wrap {
-    width: 100%;
-    padding: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
+    .hero-content {
+        margin-left: 27rem;
+        padding: 2rem;
+    }
 
-  .hero-image {
-    max-width: 400px;
-    max-height: 120px;
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-  }
+    .hero-title {
+        font-size: 10rem;
+        margin: 0 0 0.5rem;
+        letter-spacing: -.1em;
+        line-height: 10rem;
+        font-weight: bold;
+    }
 
-  .hero-placeholder {
-    width: 100%;
-    aspect-ratio: 21 / 9;
-    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%);
-    flex-shrink: 0;
-  }
+    .hero-btn-container {
+        padding-right: 10rem;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
 
-  .hero-content {
-    text-align: center;
-    padding: 2rem;
-  }
+    .hero-img {
+        width: auto;
+        height: 80vh;
+        position: absolute;
+        top: -6rem;
+        left: 0;
+    }
 
-  .hero-title {
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
-    margin: 0 0 0.5rem;
-    letter-spacing: 0.2em;
-  }
+    .hero-socials {
+        display: flex;
+        gap: .5rem;
+        margin-top: 2rem;
+        color: #909090;
+        font-weight: bold;
 
-  .hero-tagline {
-    font-size: 1.25rem;
-    color: var(--color-text-muted);
-    margin: 0 0 2rem;
-  }
+        i {
+            color: #909090;
+        }
 
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+        & > div {
+            width: fit-content;
+            display: flex;
+            gap: .25rem;
+        }
+    }
 
-  .btn {
-    display: inline-block;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    border-radius: var(--radius);
-    transition: all var(--transition);
-  }
+    .hero-btn {
+        width: fit-content;
+        padding: 1.5rem 3rem;
+        text-align: center;
+        border: none;
+        border-radius: var(--radius);
+        background-color: #e34234;
+        background-image: linear-gradient(315deg, #e34234 0%, #ff3800 74%);
+        text-transform: uppercase;
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.75rem;
+        cursor: pointer;
+        letter-spacing: 1px;
 
-  .btn-primary {
-    background: var(--color-accent);
-    color: white;
-    border: 2px solid var(--color-accent);
-  }
+        box-shadow: /* Neon glow (outer red) */ 0 0 20px #ff0000,
+        0 0 40px #ff0000,
+            /* 3D bevel: darker red sides for depth */ 0 4px 0 #cc0000,
+        0 6px 0 #aa0000,
+            /* Bottom drop shadow for height illusion */ 0 8px 20px rgba(0, 0, 0, 0.5),
+            /* Inner shine */ inset 0 0 20px rgba(255, 255, 255, 0.2);
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        //transition: all 0.3s ease;
+        position: relative;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
 
-  .btn-primary:hover {
-    background: var(--color-accent-hover);
-    border-color: var(--color-accent-hover);
-    color: white;
-  }
+    .hero-btn:hover {
+        transform: translateY(2px);
+        box-shadow: /* Glow intensifies */ 0 0 30px #ff0000,
+        0 0 60px #ff0000,
+            /* Slightly compressed bevel (starts pressing) */ 0 2px 0 #cc0000,
+        0 4px 0 #aa0000,
+            /* Reduced drop shadow (sinking) */ 0 5px 15px rgba(0, 0, 0, 0.6),
+        inset 0 0 30px rgba(255, 255, 255, 0.3);
+    }
 
-  .btn-secondary {
-    background: transparent;
-    color: var(--color-text);
-    border: 2px solid var(--color-border);
-  }
+    .hero-btn:active {
+        box-shadow: /* Glow dims slightly on full press */ 0 0 15px #ff0000,
+            /* Flattened bevel (pressed down) */ 0 0 0 #cc0000,
+        0 0 0 #aa0000,
+            /* Minimal bottom shadow */ 0 2px 8px rgba(0, 0, 0, 0.7),
+            /* Stronger inset for concave feel */ inset 0 2px 15px rgba(0, 0, 0, 0.2),
+        inset 0 0 30px rgba(255, 255, 255, 0.1);
+        transform: translateY(6px); /* Full press sink */
+        transition: all 0.1s ease; /* Snappy feedback */
+    }
 
-  .btn-secondary:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-  }
+    .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border-radius: var(--radius);
+        transition: all var(--transition);
+    }
 
-  .intro {
-    padding: 4rem 0;
-  }
+    .btn-primary {
+        background: var(--color-accent);
+        color: white;
+        border: 2px solid var(--color-accent);
+    }
 
-  .intro h2 {
-    margin: 0 0 1rem;
-    font-size: 2rem;
-  }
+    .btn-primary:hover {
+        background: var(--color-accent-hover);
+        border-color: var(--color-accent-hover);
+        color: white;
+    }
 
-  .intro-text {
-    max-width: 600px;
-    margin: 0 0 2rem;
-    color: var(--color-text-muted);
-  }
+    .btn-secondary {
+        background: transparent;
+        color: var(--color-text);
+        border: 2px solid var(--color-border);
+    }
 
-  .intro-links {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1rem;
-  }
-
-  .link-card {
-    display: block;
-    padding: 1.5rem;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    transition: all var(--transition);
-  }
-
-  .link-card:hover {
-    border-color: var(--color-accent);
-    background: var(--color-surface-hover);
-  }
-
-  .link-card-title {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-
-  .link-card-desc {
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-  </style>
+    .btn-secondary:hover {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+    }
+</style>
