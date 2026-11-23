@@ -17,6 +17,12 @@ export const siteInfo = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'telegramUrl',
+      title: 'Telegram-Gruppe (Link)',
+      type: 'url',
+      description: 'Einladungslink zur Telegram-Gruppe – wird vom großen Button auf der Startseite geöffnet',
+    }),
+    defineField({
       name: 'heroImage',
       title: 'Hero-Bild',
       type: 'image',

@@ -85,7 +85,7 @@ const rules = siteInfo?.rules ?? [];
 
   .page-hero h1 {
     margin: 0 0 0.5rem;
-    font-size: 2.5rem;
+    font-size: 4rem;
   }
 
   .page-subtitle {
@@ -107,7 +107,7 @@ const rules = siteInfo?.rules ?? [];
 
   .content-block h2 {
     margin: 0 0 1rem;
-    font-size: 1.5rem;
+    font-size: 2.25rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--color-border);
   }
@@ -120,5 +120,31 @@ const rules = siteInfo?.rules ?? [];
     border-radius: var(--radius);
     border: 1px solid var(--color-border);
     overflow-x: auto;
+  }
+
+  @media (max-width: 768px) {
+    .page-hero {
+      padding: 2rem 0;
+    }
+
+    .page-hero h1 {
+      font-size: 3rem;
+    }
+
+    .content-section {
+      padding: 2rem 0;
+    }
+
+    .content-block {
+      margin-bottom: 2rem;
+    }
+
+    .content-block h2 {
+      font-size: 1.85rem;
+    }
+
+    .schedule-text {
+      padding: 1rem;
+    }
   }
 </style>

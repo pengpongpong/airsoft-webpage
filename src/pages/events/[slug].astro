@@ -101,7 +101,7 @@ const content = event.content ?? [];
 
   .page-hero h1 {
     margin: 0 0 0.5rem;
-    font-size: 2.5rem;
+    font-size: 4rem;
   }
 
   .event-date,
@@ -136,5 +136,23 @@ const content = event.content ?? [];
 
   .content-block {
     max-width: 65ch;
+  }
+
+  @media (max-width: 768px) {
+    .page-hero {
+      padding: 2rem 0;
+    }
+
+    .page-hero h1 {
+      font-size: 3rem;
+    }
+
+    .event-content-section {
+      padding: 2rem 0;
+    }
+
+    .event-image-wrap {
+      margin-bottom: 1.5rem;
+    }
   }
 </style>

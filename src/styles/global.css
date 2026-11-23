@@ -12,12 +12,28 @@
     --color-border: #2d3a2d;
     --color-tan: #b8956b;
     --color-tan-muted: #8b7355;
-    --font-sans: 'DM Sans', system-ui, sans-serif;
-    --font-gowun-dodum: 'gowun-dodum';
-    --font-lexend-peta: 'lexend-peta';
-    --font-display: 'Bebas Neue', 'Impact', sans-serif;
+    --font-sans: 'Archivo', system-ui, sans-serif;           /* Fließtext */
+    --font-display: 'Bebas Neue', 'Impact', sans-serif;      /* Überschriften Unterseiten */
+    --font-hero: 'Archivo Black', 'Archivo', sans-serif;     /* Titel Startseite */
     --radius: 4px;
     --transition: 0.2s ease;
+
+    /* Red crosshair cursors (hotspot = center) */
+    --cursor-crosshair: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='%23000' stroke-opacity='.55' stroke-width='3.5'%3E%3Ccircle cx='16' cy='16' r='9'/%3E%3Cpath d='M16 2v8M16 22v8M2 16h8M22 16h8'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ff3800' stroke-width='1.75'%3E%3Ccircle cx='16' cy='16' r='9'/%3E%3Cpath d='M16 2v8M16 22v8M2 16h8M22 16h8'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='1.5' fill='%23ff3800'/%3E%3C/svg%3E") 16 16, crosshair;
+    --cursor-crosshair-active: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='%23000' stroke-opacity='.55' stroke-width='3.5'%3E%3Ccircle cx='16' cy='16' r='7'/%3E%3Cpath d='M16 1v9M16 22v9M1 16h9M22 16h9'/%3E%3C/g%3E%3Cg fill='none' stroke='%23ff3800' stroke-width='2'%3E%3Ccircle cx='16' cy='16' r='7'/%3E%3Cpath d='M16 1v9M16 22v9M1 16h9M22 16h9'/%3E%3C/g%3E%3Ccircle cx='16' cy='16' r='3' fill='%23ff3800'/%3E%3C/svg%3E") 16 16, pointer;
+}
+
+html,
+body {
+    cursor: var(--cursor-crosshair);
+}
+
+a,
+button,
+[role="button"],
+label,
+summary {
+    cursor: var(--cursor-crosshair-active);
 }
 
 *,
@@ -26,23 +42,6 @@
     box-sizing: border-box;
 }
 
-@font-face {
-    font-family: 'lexend-peta';
-    src: url('/public/fonts/LexendPeta-VariableFont_wght.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'gowun-dodum';
-    src: url('/public/fonts/GowunDodum-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-
 html {
     scroll-behavior: smooth;
 }
@@ -50,7 +49,7 @@ html {
 body {
     margin: 0;
     padding: 0;
-    font-family: var(--font-gowun-dodum), serif;
+    font-family: var(--font-sans);
     background-image: url(/public/bg/Landing-Page_BG.png);
     color: var(--color-text);
     line-height: 1.6;
@@ -58,17 +57,16 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-lexend-peta), serif;
+    font-family: var(--font-display);
     font-weight: 400;
-    letter-spacing: 0.05em;
-    line-height: 1.2;
+    letter-spacing: 0.03em;
+    line-height: 1.1;
 }
 
 a {
     color: var(--color-accent);
     text-decoration: none;
     transition: color var(--transition);
-    cursor: pointer;
 }
 
 a:hover {
@@ -85,6 +83,17 @@ img {
     width: 100%;
     margin: 0 auto;
     padding: 0 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
 }
 
 .sr-only {

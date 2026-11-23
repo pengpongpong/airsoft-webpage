@@ -34,67 +34,69 @@ const vorstand = verein?.vorstand ?? [];
 
   <section class="content-section">
     <div class="container">
-      <div class="legal-grid">
-        <div class="legal-block">
-          <h2>Vereinsdaten</h2>
-          <dl class="legal-dl">
-            {verein?.vereinsnummer && (
-              <>
-                <dt>Vereinsnummer</dt>
-                <dd>{verein.vereinsnummer}</dd>
-              </>
+      {verein && (
+        <div class="legal-grid">
+          <div class="legal-block">
+            <h2>Vereinsdaten</h2>
+            <dl class="legal-dl">
+              {verein?.vereinsnummer && (
+                <>
+                  <dt>Vereinsnummer</dt>
+                  <dd>{verein.vereinsnummer}</dd>
+                </>
+              )}
+              {verein?.registergericht && (
+                <>
+                  <dt>Registergericht</dt>
+                  <dd>{verein.registergericht}</dd>
+                </>
+              )}
+              {verein?.sitz && (
+                <>
+                  <dt>Sitz des Vereins</dt>
+                  <dd>{verein.sitz}</dd>
+                </>
+              )}
+              {verein?.steuernummer && (
+                <>
+                  <dt>Steuernummer</dt>
+                  <dd>{verein.steuernummer}</dd>
+                </>
+              )}
+              {verein?.finanzamt && (
+                <>
+                  <dt>Finanzamt</dt>
+                  <dd>{verein.finanzamt}</dd>
+                </>
+              )}
+            </dl>
+            {verein?.satzungUrl && (
+              <p class="satzung-link">
+                <a href={verein.satzungUrl} target="_blank" rel="noopener noreferrer">
+                  Satzung herunterladen (PDF)
+                </a>
+              </p>
             )}
-            {verein?.registergericht && (
-              <>
-                <dt>Registergericht</dt>
-                <dd>{verein.registergericht}</dd>
-              </>
-            )}
-            {verein?.sitz && (
-              <>
-                <dt>Sitz des Vereins</dt>
-                <dd>{verein.sitz}</dd>
-              </>
-            )}
-            {verein?.steuernummer && (
-              <>
-                <dt>Steuernummer</dt>
-                <dd>{verein.steuernummer}</dd>
-              </>
-            )}
-            {verein?.finanzamt && (
-              <>
-                <dt>Finanzamt</dt>
-                <dd>{verein.finanzamt}</dd>
-              </>
-            )}
-          </dl>
-          {verein?.satzungUrl && (
-            <p class="satzung-link">
-              <a href={verein.satzungUrl} target="_blank" rel="noopener noreferrer">
-                Satzung herunterladen (PDF)
-              </a>
-            </p>
+          </div>
+
+          {vorstand.length > 0 && (
+            <div class="legal-block">
+              <h2>Vorstand</h2>
+              <ul class="vorstand-list">
+                {vorstand.map((member: { name?: string; role?: string; email?: string }) => (
+                  <li>
+                    <strong>{member.name}</strong>
+                    {member.role && <span class="role"> – {member.role}</span>}
+                    {member.email && (
+                      <a href={`mailto:${member.email}`} class="email">{member.email}</a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
-
-        {vorstand.length > 0 && (
-          <div class="legal-block">
-            <h2>Vorstand</h2>
-            <ul class="vorstand-list">
-              {vorstand.map((member: { name?: string; role?: string; email?: string }) => (
-                <li>
-                  <strong>{member.name}</strong>
-                  {member.role && <span class="role"> – {member.role}</span>}
-                  {member.email && (
-                    <a href={`mailto:${member.email}`} class="email">{member.email}</a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+      )}
 
       {verein?.impressum && verein.impressum.length > 0 && (
         <div class="content-block">
@@ -134,7 +136,7 @@ const vorstand = verein?.vorstand ?? [];
 
   .page-hero h1 {
     margin: 0 0 0.5rem;
-    font-size: 2.5rem;
+    font-size: 4rem;
   }
 
   .page-subtitle {
@@ -162,7 +164,7 @@ const vorstand = verein?.vorstand ?? [];
 
   .legal-block h2 {
     margin: 0 0 1rem;
-    font-size: 1.25rem;
+    font-size: 1.85rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--color-border);
   }
@@ -232,7 +234,7 @@ const vorstand = verein?.vorstand ?? [];
 
   .content-block h2 {
     margin: 0 0 1rem;
-    font-size: 1.5rem;
+    font-size: 2.25rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--color-border);
   }
@@ -247,5 +249,55 @@ const vorstand = verein?.vorstand ?? [];
 
   .placeholder a {
     color: var(--color-accent);
+  }
+
+  @media (max-width: 768px) {
+    .page-hero {
+      padding: 2rem 0;
+    }
+
+    .page-hero h1 {
+      font-size: 3rem;
+    }
+
+    .content-section {
+      padding: 2rem 0;
+    }
+
+    .legal-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .legal-block {
+      padding: 1.25rem 1rem;
+    }
+
+    .legal-block h2 {
+      font-size: 1.6rem;
+    }
+
+    .legal-dl {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .legal-dl dd {
+      margin-bottom: 0.75rem;
+      overflow-wrap: anywhere;
+    }
+
+    .vorstand-list .email {
+      overflow-wrap: anywhere;
+    }
+
+    .content-block {
+      margin-bottom: 2rem;
+    }
+
+    .content-block h2 {
+      font-size: 1.85rem;
+    }
   }
 </style>
