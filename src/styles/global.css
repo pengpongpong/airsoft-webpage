@@ -44,8 +44,10 @@ summary {
 
 html {
     scroll-behavior: smooth;
-    /* dark behind overscroll / mobile browser bars (no white edges) */
-    background-color: var(--color-bg);
+    /* dark behind overscroll / mobile browser bars (no white edges).
+       Pure black = colour of the background image's bottom edge, so the
+       area below the footer blends in. Top bar uses theme-color (#0d0d0d) to match the header. */
+    background-color: #000;
     color-scheme: dark;
 }
 
